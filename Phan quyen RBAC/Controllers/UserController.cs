@@ -7,19 +7,47 @@ namespace Phan_quyen_RBAC.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "CanManageUsers")] // Chỉ những ai có quyền "User.Manage" mới truy cập được tất cả các endpoint trong controller này
+    [Authorize(Policy = "CanManageUsers")]
     public class UsersController : ControllerBase
     {
+        private static List<string> _users = new List<string>
+        {
+            "User 1",
+            "User 2",
+            "User 3"
+        };
+
         [HttpGet]
         public IActionResult GetAllUsers()
         {
-            return Ok(new List<string> { "User 1", "User 2", "User 3" });
+            return Ok(_users);
         }
 
         [HttpPost]
         public IActionResult CreateUser([FromBody] string userName)
         {
-            return Ok($"User '{userName}' created successfully.");
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return BadRequest("User name cannot be empty.");
+            }
+
+            _users.Add(userName);
+
+            return GetAllUsers();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            if (id < 0 || id >= _users.Count)
+            {
+                return NotFound("User not found.");
+            }
+
+            string deletedUser = _users[id];
+            _users.RemoveAt(id);
+
+            return GetAllUsers();
         }
     }
 }

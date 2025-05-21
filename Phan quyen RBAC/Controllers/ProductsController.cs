@@ -10,18 +10,32 @@ namespace Phan_quyen_RBAC.Controllers
     [Authorize] 
     public class ProductsController : ControllerBase
     {
+        private static List<string> _products = new List<string>
+        {
+            "Product A",
+            "Product B",
+            "Product C"
+        };
+
         [HttpGet]
-        [Authorize(Policy = "CanReadProducts")] 
+        [Authorize(Policy = "CanReadProducts")]
         public IActionResult GetAllProducts()
         {
-            return Ok(new List<string> { "Product A", "Product B", "Product C" });
+            return Ok(_products);
         }
 
         [HttpPost]
-        [Authorize(Policy = "CanWriteProducts")] // Chỉ những ai có quyền "Product.Write" mới truy cập được
+        [Authorize(Policy = "CanWriteProducts")]
         public IActionResult CreateProduct([FromBody] string productName)
         {
-            return Ok($"Product '{productName}' created successfully.");
+            if (string.IsNullOrWhiteSpace(productName))
+            {
+                return BadRequest("Product name cannot be empty.");
+            }
+
+            _products.Add(productName);
+
+            return GetAllProducts();
         }
 
         [HttpDelete("{id}")]
