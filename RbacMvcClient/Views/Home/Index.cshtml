@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Chào mừng bạn đến với hệ thống phân quyền</h1>
+    <p>Bạn đã đăng nhập thành công!</p>
+
+    <div class="mt-4">
+        <h4>Thông tin người dùng:</h4>
+        <p><strong>User ID:</strong> @ViewBag.UserId</p>
+        <p><strong>Username:</strong> @ViewBag.Username</p>
+        <p><strong>Vai trò:</strong> @string.Join(", ", ViewBag.Roles)</p>
+        <p><strong>Quyền hạn:</strong> @string.Join(", ", ViewBag.Permissions)</p>
+    </div>
+
+    <hr />
+
+    <div class="mt-4">
+        <h4>Thử nghiệm API:</h4>
+        <p>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-primary">Xem Sản phẩm</a>
+            <a asp-controller="Users" asp-action="Index" class="btn btn-info">Xem Người dùng</a>
+        </p>
+        <form asp-action="Logout" asp-controller="Auth" method="post" class="d-inline">
+            <button type="submit" class="btn btn-danger">Đăng xuất</button>
+        </form>
+    </div>
+</div>

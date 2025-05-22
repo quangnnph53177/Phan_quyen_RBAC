@@ -1,0 +1,59 @@
+﻿@model List<string>
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+}
+
+<h1>Danh sách sản phẩm</h1>
+
+@if (User.HasClaim("Permission", "Product.Write"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Thêm sản phẩm mới</a>
+    </p>
+}
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                @if (User.HasClaim("Permission", "Product.Write"))
+                {
+                    <th>Hành động</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>@Model[i]</td>
+                    @if (User.HasClaim("Permission", "Product.Write"))
+                    {
+                        <td>
+                            <form asp-action="Delete" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@i" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?');">Xóa</button>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Không có sản phẩm nào.</p>
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger mt-3">@ViewBag.Error</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+}
